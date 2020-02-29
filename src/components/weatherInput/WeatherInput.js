@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const WeatherInput = (props) => {
     const [current, setCurrent] = useState('');
@@ -7,16 +7,17 @@ const WeatherInput = (props) => {
 
     useEffect(() => {
         document.addEventListener('keydown', (key) => {
-            if (key.code == 'Enter') {
+            if (key.code === 'Enter') {
                 buttonRef.current.click();
             }
         })
         return document.removeEventListener('keydown', (key) => {
-            if (key.code == 'Enter') {
+            if (key.code === 'Enter') {
                 buttonRef.current.click();
             }
         })
     }, [])
+
     const handleInputChange = (e) => {
         setCurrent(e.target.value);
     }

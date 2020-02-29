@@ -1,0 +1,13 @@
+.futureData {
+    width: 120px;
+    height: 300px;
+    border: 1px solid black;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+}
+.img {
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+}
