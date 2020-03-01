@@ -3,11 +3,14 @@ import React from 'react';
 import styles from './fullData.module.css';
 
 const FullData = props => {
+    const day = new Date();
+    const time = `${day.getHours()}:${day.getMinutes()}`;
     return(
         <div className={styles.fullData}>
-            <p>{`${props.data.title}, ${props.data.parent.title}`}</p>
+            <p>{`${props.location.city}, ${props.location.country}`}</p>
+            <p>{`${props.data.day}, ${time}, ${props.data.weatherState}`}</p>
             <img className={styles.img} 
-                src={`https://www.metaweather.com/static/img/weather/${props.data.consolidated_weather[props.current].weather_state_abbr}.svg`}
+                src={'eee'}
                 alt='ups'/>
         </div>
     );

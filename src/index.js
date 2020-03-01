@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker';
 
 import axios from 'axios';
 
-axios.defaults.baseURL = "https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location";
+axios.defaults.baseURL = "https://api.openweathermap.org/data/2.5";
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

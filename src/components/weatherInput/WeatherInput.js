@@ -19,10 +19,10 @@ const WeatherInput = (props) => {
     }, [])
 
     const handleInputChange = (e) => {
-        setCurrent(e.target.value);
+        setCurrent( e.target.value );
     }
     const handleSearchClick = () => {
-        props.handleSubmit(current);
+        props.handleSubmit( current );
         setCurrent('');
     }
     return (
