@@ -24,6 +24,7 @@ const App = () => {
       .then( response => {
         console.log(response)
         getUsefulDataCurrent( response.data );
+        setIsError(false);
       })
       .catch( err => {
         console.log(err)
@@ -150,7 +151,7 @@ const App = () => {
 
   return (
     <>
-      <WeatherInput handleSubmit={getWeather} error={isError}/>
+      <WeatherInput handleSubmit={getWeather} error={isError} setError={(e) => setIsError(e)}/>
       <FullData location={location} 
         caption={`${currentWeather.day}, ${currentWeather.time}, ${currentWeather.weatherState}`}
         data={currentWeather}/>
