@@ -8,7 +8,7 @@ const FutureData =  props  => {
         <div onClick={props.handleClick} className={styles.futureData}>
             <h6>{props.data.day}</h6>
             <img className={styles.img}
-                src={`https://www.metaweather.com/static/img/weather/${props.data.weather_state_abbr}.svg`} 
+                src={`http://openweathermap.org/img/wn/${props.data.weatherIcon}@2x.png`} 
                 alt='ups' />
             <p>{`${props.data.maxTemp} / ${props.data.minTemp}`}</p>
         </div>

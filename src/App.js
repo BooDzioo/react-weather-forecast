@@ -41,15 +41,28 @@ const App = () => {
   }
 
   const getUsefulDataCurrent = data => {
+    const date = new Date();
+
+    const weatherStateUpperCase = (state) => {
+      const i = state.search(' ');
+      let help = state.charAt(0).toUpperCase() + state.slice(1);
+      if ( i !== -1 ) {
+        help = `${help.slice(0, i)} ${state.charAt(i + 1).toUpperCase()}${state.slice(i + 2)}`;
+        console.log(help)
+      }
+      return help;
+    }
+
     const help = {
-      temp: data.main.temp,
+      temp: Math.round(data.main.temp - 273.15),
       feels_like: data.main.feels_like,
       humidity: data.main.humidity,
       pressure: data.main.pressure,
-      weatherState: data.weather[0].description,
+      weatherState: weatherStateUpperCase(data.weather[0].description),
       weatherIcon: data.weather[0].icon,
       wind: data.wind.speed,
-      day: weekDay()
+      day: weekDay(),
+      time: `${date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`
   }
     setCurrentWeather(help);
   }
@@ -138,7 +151,9 @@ const App = () => {
   return (
     <>
       <WeatherInput handleSubmit={getWeather} error={isError}/>
-      <FullData location={location} data={currentWeather}/>
+      <FullData location={location} 
+        caption={`${currentWeather.day}, ${currentWeather.time}, ${currentWeather.weatherState}`}
+        data={currentWeather}/>
       {futureWeather}
     </>
   );
