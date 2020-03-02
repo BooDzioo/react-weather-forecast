@@ -1,0 +1,17 @@
+.p {
+    display: none;
+}
+
+.p__error {
+    display: block;
+    color: red;
+}
+
+.input {
+    border: 0;
+}
+
+.input__error:focus {
+    border: 0;
+    border-bottom: 3px solid red;
+}

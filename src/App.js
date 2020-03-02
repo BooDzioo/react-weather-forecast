@@ -12,7 +12,7 @@ const appID = 'c9695f512f49eff8710f793ba47a9df0';
 const App = () => {
   const [ futureWeather, setFutureWeather ] = useState(null);
   const [ currentWeather, setCurrentWeather ] = useState({});
-  const [ currentId, setCurrentId ] = useState(0);
+  const [ isError, setIsError ] = useState(false);
   const [ location, setLocation ] = useState({});
 
   useEffect( () => {
@@ -25,10 +25,18 @@ const App = () => {
         console.log(response)
         getUsefulDataCurrent( response.data );
       })
+      .catch( err => {
+        console.log(err)
+        setIsError(true);
+      })
     axios.get(`forecast?q=${city}&APPID=${appID}`)
       .then( response => {
         console.log(response)
         getUsefulDataForecast( response.data );
+      })
+      .catch( err => {
+        console.log(err);
+        setIsError(true);
       })
   }
 
@@ -129,7 +137,7 @@ const App = () => {
 
   return (
     <>
-      <WeatherInput handleSubmit={getWeather}/>
+      <WeatherInput handleSubmit={getWeather} error={isError}/>
       <FullData location={location} data={currentWeather}/>
       {futureWeather}
     </>
