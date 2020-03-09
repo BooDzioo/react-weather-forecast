@@ -1,4 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { connect } from 'react-redux';
+
+import * as actionTypes from '../../store/actions';
 
 import styles from './weatherInput.module.css';
 
@@ -35,6 +38,7 @@ const WeatherInput = (props) => {
     }
     const handleSearchClick = () => {
         props.handleSubmit( current );
+        props.requestStart( current );
         setCurrent('');
     }
     
@@ -54,4 +58,10 @@ const WeatherInput = (props) => {
     );
 }
 
-export default WeatherInput;
+const mapDispatchToProps = dispatch => {
+    return {
+        requestStart:(city) => dispatch(actionTypes.requestStart(city))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(WeatherInput);
