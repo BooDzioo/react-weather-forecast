@@ -22,6 +22,7 @@ const WeatherInput = (props) => {
         })
 
         inputRef.current.focus();
+        props.requestStart('London');
 
         return document.removeEventListener('keydown', (key) => {
             if (key.code === 'Enter') {
@@ -37,7 +38,6 @@ const WeatherInput = (props) => {
         // }
     }
     const handleSearchClick = () => {
-        props.handleSubmit( current );
         props.requestStart( current );
         setCurrent('');
     }

@@ -1,120 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
 
 import WeatherInput from './components/weatherInput/WeatherInput';
 import FullData from './components/fullData/FullData';
 import FutureData from './components/futureData/FutureData';
 
+
 import './App.css';
 
-const appID = 'c9695f512f49eff8710f793ba47a9df0';
-
-const App = () => {
+const App = (props) => {
   const [ futureWeather, setFutureWeather ] = useState(null);
-  const [ currentWeather, setCurrentWeather ] = useState({});
-  const [ isError, setIsError ] = useState(false);
   const [ location, setLocation ] = useState({});
 
-  useEffect( () => {
-    getWeather('London');
-  }, [])
-
-  const getWeather = city => {
-    axios.get(`weather?q=${city}&appid=${appID}`)
-      .then( response => {
-        console.log(response)
-        getUsefulDataCurrent( response.data );
-        setIsError(false);
-      })
-      .catch( err => {
-        console.log(err)
-        setIsError(true);
-      })
-    axios.get(`forecast?q=${city}&APPID=${appID}`)
-      .then( response => {
-        console.log(response)
-        getUsefulDataForecast( response.data );
-      })
-      .catch( err => {
-        console.log(err);
-        setIsError(true);
-      })
-  }
-
-  const getUsefulDataCurrent = data => {
-    const date = new Date();
-
-    const weatherStateUpperCase = (state) => {
-      const i = state.search(' ');
-      let help = state.charAt(0).toUpperCase() + state.slice(1);
-      if ( i !== -1 ) {
-        help = `${help.slice(0, i)} ${state.charAt(i + 1).toUpperCase()}${state.slice(i + 2)}`;
-        console.log(help)
-      }
-      return help;
-    }
-
-    const help = {
-      temp: Math.round(data.main.temp - 273.15),
-      feels_like: data.main.feels_like,
-      humidity: data.main.humidity,
-      pressure: data.main.pressure,
-      weatherState: weatherStateUpperCase(data.weather[0].description),
-      weatherIcon: data.weather[0].icon,
-      wind: data.wind.speed,
-      day: weekDay(),
-      time: `${date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`
-  }
-    setCurrentWeather(help);
-  }
-
-  const getUsefulDataForecast = data => {
-    //Finds first full day
-    let midnightIndex;
-    for (let i = 0; i < 7; i++) {
-      if ( data.list[i].dt_txt.search('00:00:00') !== -1 ) {
-        midnightIndex = i;
-        break;
-      }
-    }
-
-    let forecastArray = [{
-      city: data.city.name,
-      country: data.city.country
-    }]
-    for ( let i = midnightIndex; i < 40; i += 8 ) {
-      let minTemp = data.list[i].main.temp_min;
-      let maxTemp = data.list[i].main.temp_max;
-      const range = i < 32 ? 8 : 8 - midnightIndex;  
-      for ( let j = 0; j < range; j++ ) {
-        if ( data.list[i + j].main.temp_min < minTemp ) {
-          minTemp = data.list[i + j].main.temp_min;
-        }
-        if ( data.list[i + j].main.temp_max > maxTemp ) {
-          maxTemp = data.list[i + j].main.temp_max;
-        }
-      }
-      const help = {
-        minTemp: Math.round(minTemp - 273.15),
-        maxTemp: Math.round(maxTemp - 273.15),
-        humidity: data.list[i].main.humidity,
-        pressure: data.list[i].main.pressure,
-        weatherState: data.list[i].weather[0].description,
-        weatherIcon: data.list[i].weather[0].icon,
-        wind: data.list[i].wind.speed,
-        day: weekDay(data.list[i].dt_txt)
-      }
-      forecastArray.push( help );
-    }
-    makeFutureDataArray( forecastArray );
-  }
-
+  useEffect(() => {
+    if (props.futureWeather[0]) {
+      makeFutureDataArray(props.futureWeather);
+    } 
+  }, [props.futureWeather])
+ 
   const makeFutureDataArray = data => {
     let futureWeather = [];
     for ( let i = 0; i < 5; i++ ) {
       futureWeather[i] = <FutureData 
-        key={i}
-        onClick={() => getFullData(i + 1)} 
+        key={i} 
         data={data[i + 1]}
         />
     }
@@ -122,42 +30,23 @@ const App = () => {
     setLocation( data[0] );
   }
 
-  const weekDay = (date = Date.now()) => {
-    const time = new Date(date);
-    const help = time.getDay();
-    switch( help ) {
-        case 0:
-            return 'Sunday'
-        case 1:
-            return 'Monday'
-        case 2:
-            return 'Thuesday'
-        case 3:
-            return 'Wednesday'
-        case 4:
-            return 'Thursday'
-        case 5:
-            return 'Friday'
-        case 6:
-            return 'Saturday'
-        default:
-            break;
-    }
-}
-
-  const getFullData = index => {
-
-  }
-
   return (
     <>
-      <WeatherInput handleSubmit={getWeather} error={isError} setError={(e) => setIsError(e)}/>
+      <WeatherInput error={props.isError}/>
       <FullData location={location} 
-        caption={`${currentWeather.day}, ${currentWeather.time}, ${currentWeather.weatherState}`}
-        data={currentWeather}/>
+        caption={`${props.currentWeather.day}, ${props.currentWeather.time}, ${props.currentWeather.weatherState}`}
+        data={props.currentWeather}/>
       {futureWeather}
     </>
   );
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    currentWeather: state.current,
+    futureWeather: state.future,
+    isError: state.error
+  }
+}
+
+export default connect(mapStateToProps, null)(App);
